@@ -1,6 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
-import apiRoute from "./utils/api.js";
+import apiRoute from "./routes/api.js";
 import {DB_CONNECT} from "./utils/constants.js";
 
 const app = express();
@@ -18,5 +18,5 @@ connectToMongoDB();
 // Port Defined ..Express
 const PORT = 5000;
 app.use(express.json());
-app.use("/api/", apiRoute);
+app.use("/routes/api/", apiRoute);
 app.listen(PORT, () => console.log("Server is Runnig"));
