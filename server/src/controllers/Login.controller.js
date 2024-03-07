@@ -7,35 +7,62 @@ import User from "../models/User.js";
 
 const Login = async (req, res) => {
   const errors = validationResult(req);
-  if (errors.isEmpty()) {
-    const {username, password} = req.body;
-    const user = await User.findOne({username: username});
-    if (!user) {
-      res.json(
-        jsonGenerate(StatusCode.UNPROCESSABLE_ENTITY),
-        "Username or Password is wrong"
-      );
-    }
-  }
 
-  const verfied = bcrypt.compareSync(password, user.password);
-  if (!verfied) {
+  // Check for validation errors
+  if (!errors.isEmpty()) {
     return res.json(
-      jsonGenerate(StatusCode.UNPROCESSABLE_ENTITY),
-      "Username or Password is wrong"
+      jsonGenerate(
+        StatusCode.VALIDATION_ERROR,
+        "Validation error",
+        errors.mapped
+      )
     );
   }
-  const token = Jwt.sign({userId: user._id, JWT_TOKEN_SECRET});
 
-  return res.json(
-    jsonGenerate(StatusCode.SUCCESS, "Login Successfull", {
-      userId: user_id,
-      token: token,
-    })
-  );
+  const {username, password} = req.body;
+  try {
+    // Find the user by username
+    const user = await User.findOne({username: username});
 
-  res.json(
-    jsonGenerate(StatusCode.VALIDATION_ERROR, "Validation error", errors.mapped)
-  );
+    // Check if the user exists
+    if (!user) {
+      return res.json(
+        jsonGenerate(
+          StatusCode.UNPROCESSABLE_ENTITY,
+          "Username or Password is wrong"
+        )
+      );
+    }
+
+    // Compare the provided password with the hashed password in the database
+    const verified = bcrypt.compareSync(password, user.password);
+
+    // Check if the password is correct
+    if (!verified) {
+      return res.json(
+        jsonGenerate(
+          StatusCode.UNPROCESSABLE_ENTITY,
+          "Username or Password is wrong"
+        )
+      );
+    }
+
+    // Generate a JWT token
+    const token = Jwt.sign({userId: user._id}, "YOUR_JWT_SECRET_KEY");
+
+    // Return success response with token and user ID
+    return res.json(
+      jsonGenerate(StatusCode.SUCCESS, "Login Successful", {
+        userId: user._id,
+        token: token,
+      })
+    );
+  } catch (error) {
+    console.error("Error during login:", error);
+    return res.json(
+      jsonGenerate(StatusCode.INTERNAL_SERVER_ERROR, "Internal Server Error")
+    );
+  }
 };
+
 export default Login;

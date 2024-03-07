@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import Task from "./Task.js";
 
 const userSchema = mongoose.Schema({
   name: {
@@ -23,6 +24,12 @@ const userSchema = mongoose.Schema({
     max: 32,
     required: true,
   },
+  task: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Task",
+    },
+  ],
   date: {
     type: Date,
     default: Date.now,
