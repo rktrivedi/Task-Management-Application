@@ -9,7 +9,16 @@ import {IoIosArrowUp} from "react-icons/io";
 import VanillaTilt from "vanilla-tilt";
 import {useEffect} from "react";
 
-const Cards = ({title, body, id, delid, updateList}) => {
+const Cards = ({
+  title,
+  body,
+  id,
+  delid,
+  updateList,
+  status,
+  handleComplete,
+  handleInProgress,
+}) => {
   useEffect(() => {
     VanillaTilt.init(document.querySelectorAll(".cards"), {
       max: 10,
@@ -40,9 +49,10 @@ const Cards = ({title, body, id, delid, updateList}) => {
       {isOpen && (
         <div className="datacontainer">
           <div className="body">{body}</div>
+          <div>Status: {status}</div>
           <div className="buttons">
-            <TbProgressAlert className="icons" />
-            <FaCheckSquare className="icons" />
+            <TbProgressAlert onClick={handleInProgress} className="icons" />
+            <FaCheckSquare onClick={handleComplete} className="icons" />
             <MdEditSquare className="icons" onClick={updateList} />
             <MdDelete className="icons" onClick={() => delid(id)} />
           </div>

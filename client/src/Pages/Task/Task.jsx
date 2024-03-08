@@ -9,10 +9,15 @@ import {FaFilter} from "react-icons/fa6";
 import Update from "../../Components/UpdateModal/UpdateModal";
 
 const Todo = () => {
-  const [input, setInputs] = useState({title: "", body: ""});
+  const [input, setInputs] = useState({
+    title: "",
+    body: "",
+    status: "In Progress",
+  });
   const [taskArray, setArray] = useState([]);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [updateTaskIndex, setUpdateTaskIndex] = useState(-1);
+  const [currentFilter, setCurrentFilter] = useState("all");
 
   const handleInputChange = (e) => {
     const {name, value} = e.target;
@@ -23,9 +28,10 @@ const Todo = () => {
     if (input.title === "" || input.body === "") {
       toast.error("Title and Body Can't be Empty");
     } else {
-      setArray([...taskArray, input]);
+      setArray([...taskArray, {...input, completed: "In Progress"}]);
+      // setArray([...taskArray, input]);
       console.log(taskArray);
-      setInputs({title: "", body: ""});
+      setInputs({title: "", body: "", status: "In Progress"});
       // toast.success("Your Task Is Added");
     }
   };
@@ -58,6 +64,62 @@ const Todo = () => {
     }
 
     closeUpdateModal();
+  };
+  // Filtering the Task
+  const handleFilter = (type) => {
+    setCurrentFilter(type);
+  };
+
+  const filteredTasks = () => {
+    if (currentFilter === "all") {
+      return taskArray;
+    } else if (currentFilter === "inProgress") {
+      return taskArray.filter((item) => item.status === "In Progress");
+    } else if (currentFilter === "completed") {
+      return taskArray.filter((item) => item.status === "Completed");
+    }
+  };
+
+  const updateList = (index, updatedTitle, updatedBody, status) => {
+    const updatedTaskArray = [...taskArray];
+
+    if (index !== -1) {
+      updatedTaskArray[index] = {
+        ...updatedTaskArray[index],
+        title: updatedTitle,
+        body: updatedBody,
+        status: status,
+      };
+
+      setArray(updatedTaskArray);
+      toast.success("Task Updated Successfully");
+    }
+
+    closeUpdateModal();
+  };
+
+  const handleComplete = (id) => {
+    const updatedTaskArray = [...taskArray];
+    if (id !== -1) {
+      updatedTaskArray[id] = {
+        ...updatedTaskArray[id],
+        status: "Completed",
+      };
+      setArray(updatedTaskArray);
+      toast.success("Task Completed Successfully");
+    }
+  };
+
+  const handleInProgress = (id) => {
+    const updatedTaskArray = [...taskArray];
+    if (id !== -1) {
+      updatedTaskArray[id] = {
+        ...updatedTaskArray[id],
+        status: "In Progress",
+      };
+      setArray(updatedTaskArray);
+      toast.success("Task set to In Progress");
+    }
   };
 
   return (
@@ -104,20 +166,36 @@ const Todo = () => {
           </div>
           <div className="button1">
             <FaFilter />
-            <button className="filterbtn" type="submit">
+            <button
+              className={`filterbtn ${currentFilter === "all" && "active"}`}
+              onClick={() => handleFilter("all")}
+              type="submit"
+            >
               All Task{" "}
             </button>
-            <button className="filterbtn" type="submit">
+            <button
+              className={`filterbtn ${
+                currentFilter === "inProgress" && "active"
+              }`}
+              onClick={() => handleFilter("inProgress")}
+              type="submit"
+            >
               In Progress
             </button>
-            <button className="filterbtn" type="submit">
+            <button
+              className={`filterbtn ${
+                currentFilter === "completed" && "active"
+              }`}
+              onClick={() => handleFilter("completed")}
+              type="submit"
+            >
               Completed
             </button>
           </div>
         </div>
         <div className="container1">
-          {taskArray &&
-            taskArray.map((item, idx) => (
+          {filteredTasks() &&
+            filteredTasks().map((item, idx) => (
               <>
                 <Cards
                   key={idx}
@@ -125,6 +203,9 @@ const Todo = () => {
                   id={idx}
                   title={item.title}
                   body={item.body}
+                  status={item.status}
+                  handleComplete={() => handleComplete(idx)}
+                  handleInProgress={() => handleInProgress(idx)}
                   updateList={() => openUpdateModal(idx)}
                 />
                 {isUpdateModalOpen && (
