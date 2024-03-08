@@ -7,24 +7,28 @@ import {useEffect} from "react";
 import {Link, useNavigate} from "react-router-dom";
 import {login} from "../../services/api";
 import {ToastContainer, toast} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const SignIn = () => {
+const SignIn = ({user, setUser}) => {
   const [form, setForm] = useState({
     username: "",
     password: "",
   });
-
-  const [error, setErrors] = useState(null);
   const navigation = useNavigate();
+  useEffect(() => {
+    if (user) {
+      navigation("/Task");
+    }
+  }, []);
+  const [error, setErrors] = useState(null);
+
   const handleChange = (e) => {
     setForm({...form, [e.target.name]: e.target.value});
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("code is coming here");
     const result = await login(form);
-    console.log("form", result);
     setErrors(null);
 
     if (result.status == 200) {
@@ -54,6 +58,7 @@ const SignIn = () => {
   });
   return (
     <div className="baseGlass wrapper">
+      <ToastContainer />
       <form action="">
         <h1>SignIn</h1>
         <div className="input-box">
@@ -65,8 +70,9 @@ const SignIn = () => {
             required
           />
           <FaUser className="icon" />
+          {error?.username && <small>{error.username.msg}</small>}
         </div>
-        {error?.username && <small>{error.username.msg}</small>}
+
         <div className="input-box">
           <input
             onChange={handleChange}
@@ -77,8 +83,9 @@ const SignIn = () => {
             required
           />
           <FaLock className="icon" />
+          {error?.username && <small>{error.username.msg}</small>}
         </div>
-        {error?.username && <small>{error.username.msg}</small>}
+
         <div className="remember-forgot">
           <label>
             <input type="checkbox"></input>Remember me

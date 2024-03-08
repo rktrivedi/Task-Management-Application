@@ -13,8 +13,12 @@ import SignUp from "./Pages/SignUp/SignUp";
 import Task from "./Pages/Task/Task";
 import Home from "./Pages/Home/Home";
 import {NavbarProvider} from "./Context/NavbarContext";
+import {useState} from "react";
 
 function App() {
+  const info = localStorage.getItem("user");
+
+  const [user, setUser] = useState(JSON.parse(info));
   return (
     <div className="App">
       <BrowserRouter>
@@ -25,7 +29,10 @@ function App() {
           <Route path="/Contact" element={<Contact />} />
           <Route path="/Task" element={<Task />} />
           <Route path="/SignUp" element={<SignUp />} />
-          <Route path="/SignIn" element={<SignIn />} />
+          <Route
+            path="/SignIn"
+            element={<SignIn user={user} setUser={setUser} />}
+          />
         </Routes>
       </BrowserRouter>
     </div>
