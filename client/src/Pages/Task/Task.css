@@ -8,6 +8,7 @@
   align-items: center;
   gap: 20px;
 }
+
 .cardlist {
   display: flex;
   flex-direction: column;

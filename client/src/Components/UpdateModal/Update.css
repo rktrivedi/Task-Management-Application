@@ -1,0 +1,38 @@
+.update-popUp {
+  padding: 10px;
+  margin: 10px;
+  width: 474px;
+  height: 400px;
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  backdrop-filter: blur(2px);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  z-index: 1000;
+}
+.modalUpdate {
+  position: absolute;
+  margin-top: 250px;
+  margin-right: 400px;
+  width: 100%;
+  height: 70vh;
+  display: flex;
+  justify-content: center;
+  color: white;
+  background: rgba(7, 7, 7, 0.774);
+
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0);
+  align-items: center;
+  border-radius: 50px;
+}
+.blur-background {
+  /* pointer-events: none; */
+  /* filter: blur(5px); */
+}
+.textarea1 {
+  height: 150px;
+  width: 430px !important;
+  resize: none;
+}
