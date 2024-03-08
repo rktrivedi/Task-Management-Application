@@ -3,6 +3,7 @@ import "./SignUp.css";
 import {FaUser} from "react-icons/fa";
 import {FaLock} from "react-icons/fa";
 import {MdEmail} from "react-icons/md";
+import {Link} from "react-router-dom";
 
 import VanillaTilt from "vanilla-tilt";
 import {useEffect} from "react";
@@ -41,7 +42,12 @@ const SignUp = () => {
         <button type="submit">Login</button>
         <div className="register-link">
           <p>
-            Already have an account? <a href="#"> Sign In Now</a>
+            Already have an account?{" "}
+            <a>
+              <Link className="link" to="/SignIn">
+                Sign In Now
+              </Link>
+            </a>
           </p>
         </div>
       </form>
