@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import "./Task.css";
 import {MdSubtitles} from "react-icons/md";
 import {FaSearch} from "react-icons/fa";
@@ -7,8 +7,19 @@ import "react-toastify/dist/ReactToastify.css";
 import Cards from "../../Components/Card/Card";
 import {FaFilter} from "react-icons/fa6";
 import Update from "../../Components/UpdateModal/UpdateModal";
+import {useNavigate} from "react-router";
+import {useDispatch} from "react-redux";
+import {authActions} from "../../store";
+import {createTask} from "../../services/api";
 
-const Todo = () => {
+const Task = ({user, setUser}) => {
+  const dispath = useDispatch();
+  const [form, setForm] = useState({
+    title: "",
+    body: "",
+    status: "In Progress",
+  });
+
   const [input, setInputs] = useState({
     title: "",
     body: "",
@@ -31,7 +42,18 @@ const Todo = () => {
     setCurrentPage(1);
   };
 
-  const handleFormSubmit = (e) => {
+  const navigation = useNavigate();
+  useEffect(() => {
+    if (user) {
+      navigation("/Task");
+    }
+  }, []);
+  const [error, setErrors] = useState(null);
+
+  const handleChange = (e) => {
+    setForm({...form, [e.target.name]: e.target.value});
+  };
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
     if (input.title === "" || input.body === "") {
       toast.error("Title and Body Can't be Empty");
@@ -41,6 +63,25 @@ const Todo = () => {
       console.log(taskArray);
       setInputs({title: "", body: "", status: "In Progress"});
       // toast.success("Your Task Is Added");
+    }
+    const result = await createTask(form);
+    setErrors(null);
+
+    if (result.status == 200) {
+      if (result.data.status === 200) {
+        localStorage.setItem("user", JSON.stringify(result.data.data));
+        navigation("/Task");
+        dispath(authActions.login());
+        return;
+      }
+      if (result.data.status === 201) {
+        setErrors(result.data.data);
+        return;
+      }
+      if (result.data.status === 202) {
+        toast(result.data.message);
+        return;
+      }
     }
   };
 
@@ -246,4 +287,4 @@ const Todo = () => {
   );
 };
 
-export default Todo;
+export default Task;

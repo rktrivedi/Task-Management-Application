@@ -138,6 +138,13 @@
     flex-direction: column;
     align-items: center;
   }
+  .container .box .contains .section-1 img {
+    display: none;
+  }
+  .container {
+    width: 350px;
+    height: 700px;
+  }
 
   .container::before,
   .container::after {
@@ -168,5 +175,11 @@
 
   .container .box .contains .section-1 h3 {
     font-size: 18px;
+  }
+  .button {
+    position: relative;
+    margin-left: 50px;
+    text-decoration: none;
+    color: white;
   }
 }

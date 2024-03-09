@@ -18,7 +18,10 @@ apiRoute.post("/login", LoginSchema, Login);
 
 apiProtected.post(
   "/createTask",
-  [check(" title,Discription", "Task Discription is Required").exists()],
+  [
+    check("title", "Task Title is Required").exists(),
+    check("description", "Task description is Required").exists(),
+  ],
   createTask
 );
 

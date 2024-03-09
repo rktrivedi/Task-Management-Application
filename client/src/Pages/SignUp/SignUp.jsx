@@ -40,7 +40,7 @@ const SignUp = ({user, setUser}) => {
     if (result.status == 200) {
       if (result.data.status === 200) {
         localStorage.setItem("user", JSON.stringify(result.data.data));
-        navigation("/Task");
+        navigation("/SignIn");
         return;
       }
       if (result.data.status === 201) {
