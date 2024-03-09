@@ -18,11 +18,19 @@ const Todo = () => {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [updateTaskIndex, setUpdateTaskIndex] = useState(-1);
   const [currentFilter, setCurrentFilter] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   const handleInputChange = (e) => {
     const {name, value} = e.target;
     setInputs({...input, [name]: value});
   };
+
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value);
+    setCurrentPage(1);
+  };
+
   const handleFormSubmit = (e) => {
     e.preventDefault();
     if (input.title === "" || input.body === "") {
@@ -71,6 +79,12 @@ const Todo = () => {
   };
 
   const filteredTasks = () => {
+    const filteredBySearch = taskArray.filter(
+      (item) =>
+        item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.body.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     if (currentFilter === "all") {
       return taskArray;
     } else if (currentFilter === "inProgress") {
@@ -161,7 +175,11 @@ const Todo = () => {
       <div className="cardlist">
         <div className="controls">
           <div className="searchbox">
-            <input type="search"></input>
+            <input
+              type="search"
+              onChange={handleSearch}
+              placeholder="Search tasks"
+            ></input>
             <FaSearch className="icon" />
           </div>
           <div className="button1">

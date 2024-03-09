@@ -1,8 +1,28 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import "./Navbar.css";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
+import {useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
+import {authActions} from "../../store/index";
 
 const Navbar = () => {
+  const isLoggedIn = useSelector((state) => state.isLoggedIn);
+  console.log(isLoggedIn);
+  const navigation = useNavigate();
+
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const localuser = localStorage.getItem("user");
+    setUser(localuser);
+  }, []);
+
+  const dispatch = useDispatch();
+  const handleLogout = () => {
+    dispatch(authActions.logout());
+    localStorage.clear();
+    navigation("/login");
+  };
   return (
     <header className="header">
       <Link className="logo">TASKFLOW</Link>
@@ -16,15 +36,32 @@ const Navbar = () => {
         <Link className="link" to="/Contact">
           Contact
         </Link>
-        <Link className="link" to="/Task">
-          Task
-        </Link>
-        <Link className="link" to="/SignIn">
-          SignIn
-        </Link>
-        <Link className="link" to="/SignUp">
-          SignUp
-        </Link>
+        {isLoggedIn && (
+          <Link className="link" to="/Task">
+            Task
+          </Link>
+        )}
+
+        {/* {!isLoggedIn && (
+          <>
+            <Link className="link" to="/SignIn">
+              SignIn
+            </Link>
+            <Link className="link" to="/SignUp">
+              SignUp
+            </Link>
+          </>
+        )} */}
+        {isLoggedIn && (
+          <>
+            <Link className="link" to="/Profile">
+              Profile
+            </Link>
+            <Link onClick={handleLogout} className="link" to="/">
+              Logout
+            </Link>
+          </>
+        )}
       </nav>
     </header>
   );

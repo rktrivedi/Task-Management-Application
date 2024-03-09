@@ -8,8 +8,11 @@ import {Link, useNavigate} from "react-router-dom";
 import {login} from "../../services/api";
 import {ToastContainer, toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import {useDispatch} from "react-redux";
+import {authActions} from "../../store";
 
 const SignIn = ({user, setUser}) => {
+  const dispath = useDispatch();
   const [form, setForm] = useState({
     username: "",
     password: "",
@@ -35,6 +38,7 @@ const SignIn = ({user, setUser}) => {
       if (result.data.status === 200) {
         localStorage.setItem("user", JSON.stringify(result.data.data));
         navigation("/Task");
+        dispath(authActions.login());
         return;
       }
       if (result.data.status === 201) {

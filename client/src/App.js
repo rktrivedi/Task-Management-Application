@@ -12,10 +12,19 @@ import SignIn from "./Pages/SignIn/SignIn";
 import SignUp from "./Pages/SignUp/SignUp";
 import Task from "./Pages/Task/Task";
 import Home from "./Pages/Home/Home";
-import {NavbarProvider} from "./Context/NavbarContext";
-import {useState} from "react";
+import Profile from "./Pages/Profile/Profile";
+import {useDispatch} from "react-redux";
+import {authActions} from "./store/index";
+import {useEffect, useState} from "react";
 
 function App() {
+  const dispath = useDispatch();
+  useEffect(() => {
+    const id = sessionStorage.getItem("id");
+    if (id) {
+      dispath(authActions.login());
+    }
+  });
   const info = localStorage.getItem("user");
 
   const [user, setUser] = useState(JSON.parse(info));
@@ -29,6 +38,7 @@ function App() {
           <Route path="/Contact" element={<Contact />} />
           <Route path="/Task" element={<Task />} />
           <Route path="/SignUp" element={<SignUp />} />
+          <Route path="/Profile" element={<Profile />} />
           <Route
             path="/SignIn"
             element={<SignIn user={user} setUser={setUser} />}

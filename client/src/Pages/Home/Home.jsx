@@ -1,11 +1,30 @@
-import React from "react";
+import React, {useState} from "react";
 import "./Home.css";
 import VanillaTilt from "vanilla-tilt";
 import {useEffect} from "react";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import home from "../../Assets/home.png";
+import {useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
+import {authActions} from "../../store/index";
 
 const Home = () => {
+  const isLoggedIn = useSelector((state) => state.isLoggedIn);
+  const navigation = useNavigate();
+
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const localuser = localStorage.getItem("user");
+    setUser(localuser);
+  }, []);
+
+  const dispatch = useDispatch();
+  const handleLogout = () => {
+    dispatch(authActions.logout());
+    localStorage.clear();
+    navigation("/login");
+  };
   useEffect(() => {
     VanillaTilt.init(document.querySelectorAll(".box"), {
       max: 1,
@@ -29,16 +48,17 @@ const Home = () => {
               <span>Application</span>
             </h3>
             <p>Please Sign-Up to start managing your task.</p>
-            <div className="button">
-              <Link className="link" to="/SignUp">
-                Sign-Up
-              </Link>
-              <span> </span>
-              <Link className="link" to="/SignIn">
-                {" "}
-                Sign-In
-              </Link>
-            </div>
+            {!isLoggedIn && (
+              <div className="button">
+                <Link className="link" to="/SignUp">
+                  Sign-Up
+                </Link>
+                <span> </span>
+                <Link className="link" to="/SignIn">
+                  Sign-In
+                </Link>
+              </div>
+            )}
           </div>
           <div className="section-1">
             <img src={home} alt="img" />
